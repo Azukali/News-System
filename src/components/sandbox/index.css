@@ -12,6 +12,6 @@
   height: 5px;
   position: absolute;
 }
-::-webkit-scrollbar-thumb{background-color: #cfcfcf;}
+::-webkit-scrollbar-thumb{background-color: #001529;}
 
-::-webkit-scrollbar-track {background-color: #001529;}
+::-webkit-scrollbar-track {background-color: #cfcfcf;}
