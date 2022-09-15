@@ -6,7 +6,6 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import { log } from "@antv/g2plot/lib/utils";
 
 const { confirm } = Modal;
 
@@ -14,11 +13,11 @@ function RightList() {
   const [dataSource, setDataSource] = useState([]);
 
   const confirmMehod = (data) => {
+    console.log(data);
     confirm({
       title: "你确定要删除吗?",
       icon: <ExclamationCircleOutlined />,
       onOk() {
-        // console.log("OK");
         deleteMehod(data);
       },
       onCancel() {
@@ -27,16 +26,29 @@ function RightList() {
     });
   };
 
-  const deleteMehod = (data) => {
-    console.log(data);
+  const deleteMehod = (item) => {
+    console.log(item);
+    if (item.grade === 1) {
+      // 判断树分级是否为 1
+      setDataSource(dataSource.filter((data) => data.id !== item.id));
+      // 遍历出 dataSource 过滤id一致的渲染出来
+      axios.delete(`http://localhost:5000/rights/${item.id}`);
+    } else {
+      let list = dataSource.filter((data) => data.id === item.rightId);
+      list[0].children = list[0].children.filter((data) => data.id !== item.id);
+      console.log(list);
+    }
   };
 
   useEffect(() => {
     axios.get("http://localhost:5000/rights?_embed=children").then((res) => {
-      console.log(res.data);
       const list = res.data;
-      list[0].children = "";
-      setDataSource(res.data);
+      list.forEach((item) => {
+        if (item.children.length === 0) {
+          item.children = "";
+        }
+      });
+      setDataSource(list);
     });
   }, []);
 
