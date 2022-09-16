@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Tag, Card, Button, Modal } from "antd";
+import { Table, Tag, Card, Button, Modal, Popover, Switch } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -37,7 +37,14 @@ function RightList() {
       let list = dataSource.filter((data) => data.id === item.rightId);
       list[0].children = list[0].children.filter((data) => data.id !== item.id);
       console.log(list);
+      setDataSource([...dataSource]);
     }
+  };
+
+  const switchMethod = (data) => {
+    data.pagepermisson = data.pagepermisson === 1 ? 0 : 1;
+    setDataSource([...dataSource]);
+    console.log(data);
   };
 
   useEffect(() => {
@@ -78,12 +85,28 @@ function RightList() {
       title: "操作",
       render: (data) => {
         return (
-          <div>
-            <Button
-              type="primary"
-              shape="circle"
-              icon={<EditOutlined />}
-            ></Button>
+          <div style={{ textAlign: "center" }}>
+            <Popover
+              content={
+                <div style={{ textAlign: "center" }}>
+                  <Switch
+                    checked={data.pagepermisson}
+                    onChange={() => switchMethod(data)}
+                  ></Switch>
+                </div>
+              }
+              title="页面配置项"
+              trigger={data.pagepermisson === undefined ? "" : "click"}
+            >
+              <Button
+                style={{ margin: "0 10px" }}
+                type="primary"
+                shape="circle"
+                icon={<EditOutlined />}
+                disabled={data.pagepermisson === undefined}
+              ></Button>
+            </Popover>
+
             <Button
               danger
               type="primary"
